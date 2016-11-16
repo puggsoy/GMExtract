@@ -9,7 +9,6 @@ import format.png.Writer;
 import haxe.ds.Vector;
 import haxe.io.Bytes;
 import haxe.io.Path;
-import neko.Lib;
 import openfl.display.BitmapData;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
@@ -19,13 +18,8 @@ import sys.io.File;
 import sys.io.FileInput;
 import sys.io.FileOutput;
 import sys.io.FileSeek;
-import sys.io.Process;
 
-/**
- * ...
- * @author Sami
- */
-class Main 
+class Main
 {
 	private var txtrOff:Int;
 	private var sheets:Vector<BitmapData>;
