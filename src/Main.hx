@@ -2,10 +2,6 @@ package;
 
 import easyconsole.Begin;
 import easyconsole.End;
-import format.png.Data;
-import format.png.Reader;
-import format.png.Tools;
-import format.png.Writer;
 import haxe.ds.Vector;
 import haxe.io.Bytes;
 import haxe.io.Path;
@@ -13,11 +9,14 @@ import openfl.display.BitmapData;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openfl.utils.ByteArray;
+import structure.Chunk;
+import structure.Sprt;
 import sys.FileSystem;
 import sys.io.File;
 import sys.io.FileInput;
 import sys.io.FileOutput;
 import sys.io.FileSeek;
+import Util.*;
 
 class Main
 {
@@ -86,6 +85,16 @@ class Main
 		f.seek(0, FileSeek.SeekEnd);
 		var fLen:Int = f.tell();
 		f.seek(0, FileSeek.SeekBegin);
+		
+		//-------------------------
+		
+		var c:Sprt = Sprt.read(f, 0xBCEC);
+		
+		trace(c.name);
+		
+		return;
+		
+		//-------------------------
 		
 		var sprtOff:Int = 0;
 		var tpagOff:Int = 0;
@@ -162,12 +171,17 @@ class Main
 			
 			f.seek(pngOff, FileSeek.SeekBegin);
 			
-			var dat:Data = new Reader(f).read();
+			/*var dat:Data = new Reader(f).read();
 			var header:Header = Tools.getHeader(dat);
 			var bmp:BitmapData = new BitmapData(header.width, header.height, true, 0);
 			var bytes:Bytes = Tools.extract32(dat);
 			Tools.reverseBytes(bytes);
-			bmp.setPixels(bmp.rect, ByteArray.fromBytes(bytes));
+			bmp.setPixels(bmp.rect, ByteArray.fromBytes(bytes));*/
+			
+			var pngLen:Int = Util.getPNGSize(f);
+			var bytes:Bytes = Bytes.alloc(pngLen);
+			f.readBytes(bytes, 0, pngLen);
+			var bmp:BitmapData = BitmapData.fromBytes(ByteArray.fromBytes(bytes));
 			sheets[i] = bmp;
 			
 			Sys.println('Loaded image $i...');
@@ -258,12 +272,8 @@ class Main
 		frame.copyPixels(source, new Rectangle(x, y, w, h), new Point(rx, ry), null, null, true);
 		
 		var outPath:String = Path.join([outDir, name, name + '_$num.png']);
-		FileSystem.createDirectory(Path.directory(outPath));
 		
-		var dat:Data = Tools.build32ARGB(frame.width, frame.height, Bytes.ofData(frame.getPixels(frame.rect)));
-		var o:FileOutput = File.write(outPath);
-		new Writer(o).write(dat);
-		o.close();
+		savePNG(outPath, frame);
 		
 		f.seek(origOff, FileSeek.SeekBegin);
 	}

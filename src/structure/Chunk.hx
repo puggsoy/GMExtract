@@ -27,7 +27,7 @@ class Chunk
 	}
 	
 	public var name(default, null):String;
-	private var length(default, null):Int;
+	private var length:Int;
 	
 	public function new(name:String, length:Int)
 	{

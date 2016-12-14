@@ -1,6 +1,15 @@
 package;
+import format.png.Data;
+import format.png.Tools;
+import format.png.Writer;
 import haxe.ds.GenericStack;
+import haxe.io.Bytes;
+import haxe.io.Path;
+import openfl.display.BitmapData;
+import sys.FileSystem;
+import sys.io.File;
 import sys.io.FileInput;
+import sys.io.FileOutput;
 import sys.io.FileSeek;
 
 class Util
@@ -30,5 +39,74 @@ class Util
 		if (jumpStack.isEmpty()) throw 'No jump back address';
 		
 		f.seek(jumpStack.pop(), FileSeek.SeekBegin);
+	}
+	
+	/**
+	 * Reads a string in the given FileInput. Removes the need to manually check the length.
+	 * @param	f The FileInput to read from
+	 * @param	o The offset of the string
+	 * @return  The read string
+	 */
+	static public function getString(f:FileInput, o:Int):String
+	{
+		jump(f, o - 4);
+		
+		var len:Int = f.readInt32();
+		var r:String = f.readString(len);
+		
+		jumpBack(f);
+		
+		return r;
+	}
+	
+	/**
+	 * Checks the size of a PNG file in a FileInput.
+	 * @param	f The FileInput to read from
+	 * @param	o The offset the PNG is at. If ommitted, simply reads from the current location
+	 * @return  The size of the PNG
+	 */
+	static public function getPNGSize(f:FileInput, ?o:Int):Int
+	{
+		if (o == null) o = f.tell();
+		jump(f, o);
+		var be:Bool = f.bigEndian;
+		f.bigEndian = true;
+		
+		var fst:Int = f.readInt32();
+		var scd:Int = f.readInt32();
+		if (fst != 0x89504E47 || scd != 0x0D0A1A0A) throw 'Invalid PNG file! Offset: ${f.tell()}';
+		
+		var chunk:String;
+		var lenTotal:Int = 8;
+		
+		do
+		{
+			var chunkLen:Int = f.readInt32();
+			chunk = f.readString(4);
+			f.seek(chunkLen, FileSeek.SeekCur);
+			f.readInt32(); //CRC
+			lenTotal += chunkLen + 8;
+		}
+		while (chunk != 'IEND');
+		
+		f.bigEndian = be;
+		jumpBack(f);
+		
+		return lenTotal;
+	}
+	
+	/**
+	 * Saves a BitmapData to a PNG file.
+	 * @param	path The path of the resulting file
+	 * @param	bmp  The BitmapData to save
+	 */
+	static public function savePNG(path:String, bmp:BitmapData)
+	{
+		FileSystem.createDirectory(Path.directory(path));
+		
+		var dat:Data = Tools.build32ARGB(bmp.width, bmp.height, Bytes.ofData(bmp.getPixels(bmp.rect)));
+		var o:FileOutput = File.write(path);
+		new Writer(o).write(dat);
+		o.close();
 	}
 }

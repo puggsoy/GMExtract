@@ -12,20 +12,23 @@ class Sprt extends structure.ListChunk<Sprite>
 		
 		var sprt:Sprt = new Sprt(f.readString(4), f.readInt32(), f.readInt32());
 		
-		for (i in 0...sprt.addressCount)
+		if (sprt.name != 'SPRT') throw 'Trying to read SPRT at incorrect offset!';
+		
+		for (i in 0...sprt.offsetCount)
 		{
-			sprt.sprites[i] = Sprite.read(f, sprt.addresses[i]);
+			sprt.offsets[i] = f.readInt32();
+			sprt.sprites[i] = Sprite.read(f, sprt.offsets[i]);
 		}
 		
 		if (offset != null) jumpBack(f);
 		return sprt;
 	}
 	
-	private var sprites:Vector<Sprite>;
+	public var sprites(default, null):Vector<Sprite>;
 	
-	public function new(name:String, length:Int, addressCount:Int) 
+	public function new(name:String, length:Int, offsetCount:Int) 
 	{
-		super(name, length, addressCount);
+		super(name, length, offsetCount);
 		sprites = objects;
 	}
 }
