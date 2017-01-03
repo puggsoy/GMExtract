@@ -20,7 +20,7 @@ class Util
 	static private var jumpStack:GenericStack<Int> = new GenericStack<Int>();
 	
 	/**
-	 * Jumps to an offset in a FileInput, storing the current position.
+	 * Jumps to an offset in a FileInput, storing the current position. Don't forget to jumpBack() afterwards!
 	 * @param	f The FileInput to jump through
 	 * @param	o The offset to jump to
 	 */
@@ -39,6 +39,35 @@ class Util
 		if (jumpStack.isEmpty()) throw 'No jump back address';
 		
 		f.seek(jumpStack.pop(), FileSeek.SeekBegin);
+	}
+	
+	/**
+	 * Finds the offset of the given chunk.
+	 * @param	f      The FileInput to find the chunk in
+	 * @param	chnkNm 4-character header of the chunk to find
+	 * @return The offset of the chunk
+	 */
+	static public function findChunk(f:FileInput, chnkNm:String):Int
+	{
+		jump(f, 0);
+		
+		var chunk:String;
+		do
+		{
+			chunk = f.readString(4);
+			var len:Int = f.readInt32();
+			
+			if (chunk == 'FORM') continue;
+			if (chunk == chnkNm) break;
+			
+			f.seek(len, FileSeek.SeekCur);
+		}
+		while (!f.eof());
+		
+		var ret:Int = f.tell() - 8;
+		
+		jumpBack(f);
+		return ret;
 	}
 	
 	/**
@@ -85,7 +114,7 @@ class Util
 			chunk = f.readString(4);
 			f.seek(chunkLen, FileSeek.SeekCur);
 			f.readInt32(); //CRC
-			lenTotal += chunkLen + 8;
+			lenTotal += chunkLen + 12;
 		}
 		while (chunk != 'IEND');
 		
@@ -102,11 +131,25 @@ class Util
 	 */
 	static public function savePNG(path:String, bmp:BitmapData)
 	{
-		FileSystem.createDirectory(Path.directory(path));
+		if(Path.directory(path) != '') FileSystem.createDirectory(Path.directory(path));
 		
 		var dat:Data = Tools.build32ARGB(bmp.width, bmp.height, Bytes.ofData(bmp.getPixels(bmp.rect)));
 		var o:FileOutput = File.write(path);
 		new Writer(o).write(dat);
 		o.close();
+	}
+	
+	/**
+	 * Saves bytes to a file.
+	 * @param	path The path of the resulting file
+	 * @param	b    The bytes to save
+	 */
+	static public function saveBytes(path:String, b:Bytes)
+	{
+		if (Path.directory(path) != '') FileSystem.createDirectory(Path.directory(path));
+		
+		var fo:FileOutput = File.write(path);
+		fo.write(b);
+		fo.close();
 	}
 }

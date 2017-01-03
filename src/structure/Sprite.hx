@@ -1,6 +1,7 @@
 package structure;
 import haxe.ds.Vector;
 import haxe.io.Bytes;
+import haxe.io.Path;
 import sys.io.FileInput;
 import Util.*;
 
@@ -52,6 +53,17 @@ class Sprite
 	private var textureCount:Int;
 	private var textureOffsets:Vector<Int>;
 	
-	public function new()
-	{}
+	public function new() {}
+	
+	public function extract(f:FileInput, outDir:String)
+	{
+		for (i in 0...textureCount)
+		{
+			var outPath:String = Path.join([outDir, name, name + '_$i.png']);
+			var tpag:TexturePage = TexturePage.read(f, textureOffsets[i]);
+			
+			Sys.println('Saving $outPath');
+			savePNG(outPath, tpag.getBitmap(f));
+		}
+	}
 }

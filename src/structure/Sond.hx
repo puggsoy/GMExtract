@@ -4,25 +4,25 @@ import structure.ListChunk;
 import sys.io.FileInput;
 import Util.*;
 
-class Sprt extends structure.ListChunk<Sprite>
+class Sond extends structure.ListChunk<Sound>
 {
-	static public function read(f:FileInput, ?offset:Int):Sprt
+	static public function read(f:FileInput, ?offset:Int):Sond
 	{
 		if (offset != null) jump(f, offset);
-		else jump(f, findChunk(f, 'SPRT'));
+		else jump(f, findChunk(f, 'SOND'));
 		
-		var sprt:Sprt = new Sprt(f.readString(4), f.readInt32(), f.readInt32());
+		var sond:Sond = new Sond(f.readString(4), f.readInt32(), f.readInt32());
 		
-		if (sprt.name != 'SPRT') throw 'Trying to read SPRT at incorrect offset!';
+		if (sond.name != 'SOND') throw 'Trying to read SPRT at incorrect offset!';
 		
-		for (i in 0...sprt.offsetCount)
+		for (i in 0...sond.offsetCount)
 		{
-			sprt.offsets[i] = f.readInt32();
-			sprt.objects[i] = Sprite.read(f, sprt.offsets[i]);
+			sond.offsets[i] = f.readInt32();
+			sond.objects[i] = Sound.read(f, sond.offsets[i]);
 		}
 		
 		if (offset != null) jumpBack(f);
-		return sprt;
+		return sond;
 	}
 	
 	public function new(name:String, length:Int, offsetCount:Int) 
