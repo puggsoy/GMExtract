@@ -1,8 +1,8 @@
 package structure;
+import Util.*;
 import haxe.io.Bytes;
 import sys.io.FileInput;
 import sys.io.FileSeek;
-import Util.*;
 
 class Audio
 {

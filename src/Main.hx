@@ -1,25 +1,17 @@
 package;
 
+import Util.*;
 import easyconsole.Begin;
 import easyconsole.End;
-import haxe.Timer;
 import haxe.ds.Vector;
-import haxe.io.Bytes;
 import haxe.io.Path;
 import openfl.display.BitmapData;
-import openfl.geom.Point;
-import openfl.geom.Rectangle;
-import openfl.utils.ByteArray;
-import structure.Chunk;
 import structure.Sond;
 import structure.Sprt;
-import structure.Texture;
 import sys.FileSystem;
 import sys.io.File;
 import sys.io.FileInput;
-import sys.io.FileOutput;
 import sys.io.FileSeek;
-import Util.*;
 
 class Main
 {
@@ -39,7 +31,7 @@ class Main
 	{
 		var pName:String = Path.withoutExtension(Path.withoutDirectory(Sys.executablePath()));
 		Begin.init();
-		Begin.usage = 'Usage: $pName inFile outDir [-s|-a]]\n    inFile: The data.win file to extract from\n    outDir: The folder to save the extracted files to\n    [-s]: Only extract sprites\n    [-a]: Only extract audio';
+		Begin.usage = 'Usage: $pName inFile outDir [-s|-a]]\n    inFile: The data.win file to extract from\n    outDir: The folder to save the extracted files to\n    -s: Only extract sprites\n    -a: Only extract audio';
 		Begin.functions = [null, null, checkArgs];
 		Begin.parseArgs();
 	}

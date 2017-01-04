@@ -1,9 +1,6 @@
 package structure;
-import haxe.io.Bytes;
-import haxe.io.Input;
-import sys.io.FileInput;
-import sys.io.FileSeek;
 import Util.*;
+import sys.io.FileInput;
 
 class Chunk
 {

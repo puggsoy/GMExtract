@@ -1,10 +1,10 @@
 package structure;
+import Util.*;
 import haxe.ds.Vector;
 import haxe.io.Bytes;
 import openfl.display.BitmapData;
 import openfl.utils.ByteArray;
 import sys.io.FileInput;
-import Util.*;
 import sys.io.FileSeek;
 
 class Texture

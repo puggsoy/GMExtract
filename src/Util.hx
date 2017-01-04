@@ -12,6 +12,9 @@ import sys.io.FileInput;
 import sys.io.FileOutput;
 import sys.io.FileSeek;
 
+/**
+ * This contains a bunch of utility functions that are either used in multiple places or are just nicer to have separately.
+ */
 class Util
 {
 	/**

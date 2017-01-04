@@ -1,9 +1,9 @@
 package structure;
+import Util.*;
 import openfl.display.BitmapData;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import sys.io.FileInput;
-import Util.*;
 
 class TexturePage
 {

@@ -1,7 +1,6 @@
 package structure;
 import haxe.ds.Vector;
 import structure.Chunk;
-import sys.io.FileInput;
 
 class ListChunk<T> extends structure.Chunk
 {

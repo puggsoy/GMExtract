@@ -1,8 +1,7 @@
 package structure;
-import haxe.ds.Vector;
+import Util.*;
 import structure.ListChunk;
 import sys.io.FileInput;
-import Util.*;
 
 class Sprt extends structure.ListChunk<Sprite>
 {
