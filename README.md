@@ -1,3 +1,6 @@
+# NOTICE:
+*This project is no longer being worked on and will not be updated. See this project's successor [GMS Explorer](https://github.com/puggsoy/GMS-Explorer).*
+
 # GMExtract
 This is a tool to extract sprites from the data.win file of games made with Game Maker Studio.
 Lots of credit to PoroCYon for the info [here](https://gitlab.com/snippets/14944) and Mirrawrs for the info [here](http://undertale.rawr.ws/unpacking), most of the knowledge needed for this came from them.
